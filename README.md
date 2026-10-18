@@ -52,7 +52,7 @@ so a leaf, once grown, stays.
 On the Pi (Python 3.11+):
 
 ```sh
-cd ~/pi-services/sprout
+cd ~/personal/sprout
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 cp .env.example .env    # then fill in the handle and an app password
@@ -83,8 +83,10 @@ about those.
 
 ## Running as a service
 
-`deploy/sprout.service` is a systemd unit. Copy it to
-`/etc/systemd/system/sprout.service`, fix `User` and the two paths, then:
+`deploy/sprout.service` is a systemd unit, set up for user `reiberry` and
+`~/personal/sprout`. Copy it to `/etc/systemd/system/sprout.service` (change
+`User` and the two paths if yours differ) and, once `seed` or `adopt` has made a
+tree:
 
 ```sh
 sudo systemctl daemon-reload
@@ -95,6 +97,11 @@ journalctl -u sprout -f
 Everything the bot keeps is in `data/` (`SPROUT_DATA`): `sprout.db` (SQLite),
 `session.txt` (the login session, readable only by its owner, reused across
 restarts because Bluesky limits logins) and `out/`.
+
+`scripts/backup-db.sh` copies `sprout.db` through SQLite's backup API (safe while
+the bot writes) into `~/sprout_backups` and `/mnt/hdd/sprout_backups`, keeping
+the last 14. Run it daily from cron; the line is at the top of the script. The
+session needs no backup: losing it only means one fresh login.
 
 When Bluesky rejects the session, or ten steps in a row fail, the bot exits with
 code 1 and systemd starts it again with a fresh login. A wrong handle or app

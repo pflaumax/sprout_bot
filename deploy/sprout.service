@@ -1,5 +1,7 @@
-# Copy to /etc/systemd/system/sprout.service, fix User and the two paths,
-# then: sudo systemctl daemon-reload && sudo systemctl enable --now sprout
+# Copy to /etc/systemd/system/sprout.service (User and paths are for the Pi,
+# change them if yours differ). Start it only once `seed` or `adopt` has made
+# a tree: without one the bot exits 1 and systemd restarts it every minute.
+# sudo systemctl daemon-reload && sudo systemctl enable --now sprout
 [Unit]
 Description=Sprout, the Bluesky tree bot
 After=network-online.target
@@ -7,9 +9,9 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=pi
-WorkingDirectory=/home/pi/pi-services/sprout
-ExecStart=/home/pi/pi-services/sprout/.venv/bin/python -m sprout run
+User=reiberry
+WorkingDirectory=/home/reiberry/personal/sprout
+ExecStart=/home/reiberry/personal/sprout/.venv/bin/python -m sprout run
 Restart=on-failure
 RestartSec=60
 # 78 means Bluesky refused the handle or app password: retrying would only
