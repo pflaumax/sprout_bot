@@ -83,15 +83,15 @@ about those.
 
 ## Running as a service
 
-`deploy/sprout.service` is a systemd unit, set up for user `reiberry` and
-`~/personal/sprout`. Copy it to `/etc/systemd/system/sprout.service` (change
+`deploy/sprout-bot.service` is a systemd unit, set up for user `reiberry` and
+`~/personal/sprout`. Copy it to `/etc/systemd/system/sprout-bot.service` (change
 `User` and the two paths if yours differ) and, once `seed` or `adopt` has made a
 tree:
 
 ```sh
 sudo systemctl daemon-reload
-sudo systemctl enable --now sprout
-journalctl -u sprout -f
+sudo systemctl enable --now sprout-bot
+journalctl -u sprout-bot -f
 ```
 
 Everything the bot keeps is in `data/` (`SPROUT_DATA`): `sprout.db` (SQLite),
@@ -106,7 +106,7 @@ session needs no backup: losing it only means one fresh login.
 When Bluesky rejects the session, or ten steps in a row fail, the bot exits with
 code 1 and systemd starts it again with a fresh login. A wrong handle or app
 password exits with 78, which the unit file tells systemd not to retry: fix
-`.env` and `sudo systemctl restart sprout`. If the Pi was off, the bot reads back
+`.env` and `sudo systemctl restart sprout-bot`. If the Pi was off, the bot reads back
 through up to 10,000 notifications to where it stopped.
 
 ## Settings

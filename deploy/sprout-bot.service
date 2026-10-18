@@ -1,7 +1,7 @@
-# Copy to /etc/systemd/system/sprout.service (User and paths are for the Pi,
+# Copy to /etc/systemd/system/sprout-bot.service (User and paths are for the Pi,
 # change them if yours differ). Start it only once `seed` or `adopt` has made
 # a tree: without one the bot exits 1 and systemd restarts it every minute.
-# sudo systemctl daemon-reload && sudo systemctl enable --now sprout
+# sudo systemctl daemon-reload && sudo systemctl enable --now sprout-bot
 [Unit]
 Description=Sprout, the Bluesky tree bot
 After=network-online.target
