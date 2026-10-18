@@ -13,12 +13,14 @@ from .tree import Stats
 MAX_CHARS = 290  # Bluesky allows 300 graphemes; leave room for emoji counting
 
 SEED = (
-    "Це насінина 🌱\n"
+    "Я насінина, і з мене може вирости дерево.\n"
     "\n"
-    "Лайк — листок. Репост — нова гілка. Відповідь — квітка.\n"
-    "Лайки, що прийдуть через твій репост, виростуть на твоїй гілці.\n"
+    "Лайкни, і на ньому з'явиться листок. Зроби репост, і проросте нова гілка."
+    " Відповідай тут, і розквітне квітка.\n"
     "\n"
-    "Подивимось, яким виросте дерево."
+    "Якщо хтось лайкне мене у твоєму репості, цей листок виросте на твоїй гілці.\n"
+    "\n"
+    "Час від часу я показуватиму, яким стало дерево."
 )
 
 
@@ -64,7 +66,7 @@ def update(now: Stats, before: Stats, tag_leader: bool) -> list[tuple]:
         f" {flowers(now.flowers)}.",
     ]
     if now.depth:
-        record = " — новий рекорд!" if now.depth > before.depth else ""
+        record = ". Це новий рекорд!" if now.depth > before.depth else ""
         lines.append(f"Найдовший ланцюг репостів: {now.depth}{record}")
 
     segments: list[tuple] = [("text", "\n".join(lines))]
@@ -73,7 +75,7 @@ def update(now: Stats, before: Stats, tag_leader: bool) -> list[tuple]:
         line = [
             ("text", "\nНайбільша гілка тепер у "),
             ("mention", "@" + now.leader_handle, now.leader_did),
-            ("text", f" — на ній {leaves(now.leader_leaves)}."),
+            ("text", f", на ній {leaves(now.leader_leaves)}."),
         ]
         if length(segments) + length(line) <= MAX_CHARS:
             segments += line
@@ -97,6 +99,7 @@ def alt(stats: Stats) -> str:
         return "Маленький паросток із двома листочками. Дерево ще не почало рости."
     return (
         f"Згенероване дерево: {leaves(stats.leaves)}, {branches(stats.branches)}, "
-        f"{flowers(stats.flowers)}. Кожна гілка — чийсь репост, листки на ній — "
-        "лайки, що прийшли через нього, квіти — відповіді."
+        f"{flowers(stats.flowers)}. Гілки виросли з репостів, листки з лайків, "
+        "квіти з відповідей. Лайки, що прийшли через чийсь репост, ростуть на "
+        "його гілці."
     )

@@ -42,7 +42,7 @@ def test_a_longer_chain_is_called_out():
             Stats(leaves=1, branches=3, depth=3), Stats(branches=2, depth=2), False
         )
     )
-    assert "Найдовший ланцюг репостів: 3 — новий рекорд!" in text
+    assert "Найдовший ланцюг репостів: 3. Це новий рекорд!" in text
 
 
 def test_leader_is_mentioned_only_when_it_changes():
@@ -56,7 +56,7 @@ def test_leader_is_mentioned_only_when_it_changes():
     segments = texts.update(now, Stats(leader_did="did:plc:bob"), tag_leader=True)
     assert ("mention", "@alice.test", "did:plc:alice") in segments
     assert texts.plain(segments).endswith(
-        "Найбільша гілка тепер у @alice.test — на ній 37 листків."
+        "Найбільша гілка тепер у @alice.test, на ній 37 листків."
     )
 
     assert all(s[0] == "text" for s in texts.update(now, now, tag_leader=True))
@@ -75,3 +75,18 @@ def test_update_fits_in_a_post():
     )
     assert texts.length(texts.update(huge, Stats(), tag_leader=True)) <= 300
     assert len(texts.SEED) <= 300
+
+
+def test_no_dashes_anywhere():
+    full = Stats(
+        leaves=40,
+        branches=5,
+        flowers=2,
+        depth=3,
+        leader_did="did:plc:alice",
+        leader_handle="alice.test",
+        leader_leaves=37,
+    )
+    update = texts.plain(texts.update(full, Stats(depth=2), tag_leader=True))
+    for text in (texts.SEED, update, texts.alt(full), texts.alt(Stats())):
+        assert "—" not in text and "–" not in text
